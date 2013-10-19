@@ -1,0 +1,44 @@
+class BookInStock
+
+  def initialize(isbn, price)    
+    @isbn = isbn
+    @price = price
+
+    if isbn.empty? || price <= 0
+      raise ArgumentError, "check arguments"
+    end
+  end
+
+  def isbn
+    @isbn
+  end
+
+  def isbn=(isbn)
+    @isbn = isbn
+  end
+
+  def price
+    @price
+  end
+
+  def price=(price)
+    @price = price
+  end
+
+  def price_as_string()
+    return "$#{sprintf('%.2f', @price)}"
+  end
+end
+
+#book1 = BookInStock.new("123",10.0)
+#puts book1.isbn
+#puts book1.price_as_string
+#book2 = BookInStock.new("678",9.9)
+#puts book2.price
+#puts book2.price_as_string
+#book2.price = 8.7
+#puts book2.price_as_string
+
+#book3 = BookInStock.new("",0.1)
+#book4 = BookInStock.new("12",0)
+#book5 = BookInStock.new('',4.0)
