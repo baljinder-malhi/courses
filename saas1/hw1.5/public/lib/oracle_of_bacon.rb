@@ -33,12 +33,14 @@ class OracleOfBacon
     make_uri_from_arguments
     begin
       xml = URI.parse(uri).read
+      Response.new(xml)
     rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError,
       Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError,
       Net::ProtocolError => e
       # convert all of these into a generic OracleOfBacon::NetworkError,
       #  but keep the original error message
       # your code here
+      raise NetworkError, e.message
     end
     # your code here: create the OracleOfBacon::Response object
   end
@@ -46,6 +48,7 @@ class OracleOfBacon
   def make_uri_from_arguments
     # your code here: set the @uri attribute to properly-escaped URI
     #   constructed from the @from, @to, @api_key arguments
+    @uri = 'http://oracleofbacon.org/cgi-bin/xml?p=' + @api_key + '&a=' + CGI.escape(@from) + '&b=' + CGI.escape(@to)
   end
       
   class Response
@@ -76,23 +79,16 @@ class OracleOfBacon
     
     def parse_graph_response
       @type = :graph
-      @data = @doc.xpath('/link').map { |link| link.content }
-    #  links = Array.new
- 
-     
-    # @doc.xpath('/link').map { |link| link.content }
-    #  @doc.xpath('/link').each do |link|
-    #    links.push(link.content)
-    #  end
-    #  @data = links
-
-      #@doc.xpath('/link').map { |link| link.content }
-
+      @data = @doc.xpath('//link/*').map do  |link| 
+        link.text 
+      end    
     end
 
     def parse_spellcheck_response
       @type = :spellcheck
-      @data = 'Unauthorized access'
+      @data = @doc.xpath('//spellcheck/*').map do  |link| 
+        link.text 
+      end
     end
 
 
